@@ -1,4 +1,5 @@
 <?php
+	
 	/*
 	This file contains all the functions realted to the user management module
 	The OFS contains two types of user :
@@ -70,8 +71,8 @@
 		$query = 'INSERT INTO `users` (`id`, `name`, `email`, `password`, `admin_role`) VALUES (NULL, \''. $name .'\', \''. $email .'\', \''. $pass_hash .'\', \'0\')';
 		if($res = mysqli_query($dbcon,$query))
 		{
-			echo "Password  is: $password";
-			if(reg_mail($name,$email,$password))
+			//echo "Password  is: $password";
+			if(reg_success_mail($name,$email,$password))
 			{
 				return true;
 			}

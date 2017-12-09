@@ -6,6 +6,8 @@
 	require_once 'bin/lib/csrf.class.php';
 	require_once 'bin/lib/utils.php';
     require_once 'bin/lib/user_mgmt.php';
+    require_once 'bin/config/class.mail.php';
+    require_once 'bin/config/registration.mail.php';
     if(!isLoggedin())
 	{
 	   header('Location:login.php');

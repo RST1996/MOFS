@@ -22,7 +22,7 @@
         }
         else
         {
-            echo 'Invalid Credentials' ;
+            ?><script>alert( 'Invalid Credentials' );</script><?php
             unset($_POST);
         }
     }

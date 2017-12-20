@@ -1,15 +1,17 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.0
--- https://www.phpmyadmin.net/
+-- version 4.5.1
+-- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
+
+
 -- Generation Time: Dec 09, 2017 at 06:20 PM
 -- Server version: 10.1.25-MariaDB
 -- PHP Version: 7.1.7
 
+
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
-START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -36,7 +38,12 @@ CREATE TABLE `acad_form` (
   `created_by` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- --------------------------------------------------------
+
+
+INSERT INTO `acad_form` (`id`, `name`, `description`, `status`, `created_by`) VALUES
+(1, 'Academic Feedback Form', 'This is a academic Feedback form to collect common feedback from students', 0, 1);
+
+
 
 --
 -- Table structure for table `acad_form_questions`
@@ -48,9 +55,23 @@ CREATE TABLE `acad_form_questions` (
   `question` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- --------------------------------------------------------
 
---
+
+INSERT INTO `acad_form_questions` (`id`, `sub_cat_id`, `question`) VALUES
+(1, 1, 'Whether the teacher is well prepared and delivers lectures in well prepared manner?'),
+(2, 1, 'Was the back board writing clear and organised?'),
+(3, 1, 'what'),
+(4, 1, 'When'),
+(5, 1, 'what'),
+(6, 2, 'what'),
+(7, 2, 'when'),
+(8, 2, 'what'),
+(9, 2, 'what'),
+(10, 2, 'when'),
+(11, 2, 'how'),
+(12, 1, 'how');
+
+
 -- Table structure for table `sub_category`
 --
 
@@ -59,7 +80,12 @@ CREATE TABLE `sub_category` (
   `name` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- --------------------------------------------------------
+
+INSERT INTO `sub_category` (`id`, `name`) VALUES
+(1, 'Theory'),
+(2, 'Practical');
+
+
 
 --
 -- Table structure for table `users`
@@ -135,8 +161,7 @@ ALTER TABLE `sub_category`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;COMMIT;
-
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

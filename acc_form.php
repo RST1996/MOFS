@@ -101,32 +101,8 @@
                       <div id="step-1">
                         <form class="form-horizontal form-label-left">
 
-                          <div class="form-group">
-							<label class="control-label col-md-3 col-sm-3 col-xs-12">Branch </label>
-							<div class="col-md-6 col-sm-6 col-xs-12">
-							  <select class="form-control">
-								<option>Choose option</option>
-								<option>Computer</option>
-								<option>Electronics and Telecommunication</option>
-								<option>Civil</option>
-								<option>Electical</option>
-								<option>Mechanical</option>
-								<option>Instrumentaation</option>
-							  </select>
-							</div>
-						  </div>
-						  <div class="form-group">
-							<label class="control-label col-md-3 col-sm-3 col-xs-12">Class</label>
-							<div class="col-md-6 col-sm-6 col-xs-12">
-							  <select class="form-control">
-								<option>Choose option</option>
-								<option>First Year</option>
-								<option>Second Year</option>
-								<option>Third Year</option>
-								<option>Final Year</option>
-							  </select>
-							</div>
-						  </div>
+                         
+						 
                           
 						  <div class="form-group">
 							<label class="control-label col-md-3 col-sm-3 col-xs-12">Your Percentage in the last year/sem.</label>

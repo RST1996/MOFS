@@ -3,6 +3,10 @@
 	require_once 'bin/config/dbcon.php';
 	require_once 'bin/lib/utils.php';
     require_once 'bin/lib/user_mgmt.php';
+    if(!$_SESSION['current_user']['admin_role'])
+	{
+	    die('Un-ethical activity detected..!!  Do not try to such things here.'); 
+	}
 	if (isset($_POST['del_id']) && ( isLoggedin() != null) ) {
 		$del_id = $_POST['del_id'];
 		

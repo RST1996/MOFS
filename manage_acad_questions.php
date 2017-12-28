@@ -4,9 +4,9 @@
 	require_once 'bin/config/dbcon.php';
 	require_once 'bin/lib/csrf.class.php';
 	require_once 'bin/lib/utils.php';
-    require_once 'bin/lib/user_mgmt.php';
-    require_once 'bin/lib/acad_ques_mgmt.php';
-    if(!isLoggedin())
+  require_once 'bin/lib/user_mgmt.php';
+  require_once 'bin/lib/acad_ques_mgmt.php';
+  if(!isLoggedin())
 	{
 	   header('Location:login.php');
 	   die('Un-ethical activity detected..!!  Do not try to such things here.'); 

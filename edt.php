@@ -68,9 +68,11 @@
                   </div>
                   <div class="x_content">
                     <br />
-					<form id="sub" class="form-horizontal form-label-left" novalidate>
+					<form class="form-horizontal form-label-left" novalidate>
 					  <span class="section">Subject and Teachers Details</span>
-					  <div id="dynamicInput"></div>
+					  <div id="dynamicInput">
+						  
+						</div>
 						<hr width='80%'>
 						<div class="item form-group" align="right">
 							<div class="col-md-10 col-sm-10 col-xs-12" >
@@ -86,7 +88,6 @@
                         	</div>
                       	</div> -->
                     </form>
-                    <div id="test"></div>
                   </div>
                 </div>
               </div>
@@ -105,6 +106,7 @@ function reset() {
 <script type="text/javascript">
 	function visible()
 	{
+		alert("Hey..");
 		$("#teachers_div").show();
        $("#addTeacherIpBtn").show();
 	}
@@ -139,39 +141,15 @@ function reset() {
 	function addInput(divName)
 	{		 
 		var container = document.getElementById(divName);
-		if(container.innerHTML=='')
-		{
-			alert("Hello");
-
-
-			//Here process the form && submit via ajax..
-			//Then clear the div again
-		}
-		else
-		{
-			var string = $('form#sub').serialize();
-			var xhttp = new XMLHttpRequest();
-	        xhttp.onreadystatechange = function() {
-				
-	        	if (this.readyState == 4 && this.status == 200) {
-					
-	        		document.getElementById('test').innerHTML = this.responseText; 
-	        	}
-	        };
-	        xhttp.open("POST", "ajax_test.php", true);
-	        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	        xhttp.send(string);
-			
-		}
 		//alert("hey...");
 		var sName = document.createElement('div');
 		sName.className = "item form-group";
-		sName.innerHTML = '<label class="control-label col-md-3 col-sm-3 col-xs-12" for="sub_name"  >Subject Name <span class="required">*</span></label><div class="col-md-6 col-sm-6 col-xs-8"><input id="sub_name" class="form-control col-md-7 col-xs-12"  name="sub_name"  required="required" type="text"></div>';
+		sName.innerHTML = '<label class="control-label col-md-3 col-sm-3 col-xs-12" for="sub_name"  >Subject Name <span class="required">*</span></label><div class="col-md-6 col-sm-6 col-xs-8"><input id="sub_name" class="form-control col-md-7 col-xs-12"  name="sub_name[]"  required="required" type="text"></div>';
 		container.appendChild(sName);
 
 		var sCat = document.createElement('div');
 		sCat.className = "item form-group";
-		sCat.innerHTML = '<label class="control-label col-md-3 col-sm-3 col-xs-12" for="sub_name">Subject Type <span class="required">*</span></label><div class="col-md-6 col-sm-6 col-xs-12"><select class="form-control" name="sub_type" required="required" class="form-control col-md-7 col-xs-12" ><option value=""> --SELECT A SUBJECT CATEGORY--</option><?php
+		sCat.innerHTML = '<label class="control-label col-md-3 col-sm-3 col-xs-12" for="sub_name">Subject Type <span class="required">*</span></label><div class="col-md-6 col-sm-6 col-xs-12"><select class="form-control" name="sub_type[]" required="required" class="form-control col-md-7 col-xs-12" ><option value=""> --SELECT A SUBJECT CATEGORY--</option><?php
 	$sub_cat_fetch_query = "SELECT * FROM `sub_category`";
 	if($res = mysqli_query($dbcon,$sub_cat_fetch_query))
 	{
@@ -187,12 +165,12 @@ function reset() {
 
 		var oflag = document.createElement('div');
 		oflag.className = "item form-group";
-		oflag.innerHTML = '<label class="control-label col-md-3 col-sm-3 col-xs-12" for="optional_sub">Optional Subject <span class="required">*</span></label><div class="col-md-6 col-sm-6 col-xs-12"><input type="radio"  name="optional_sub" value="0"> &nbsp; No&nbsp;<input type="radio"  name="optional_sub" value="1"> Yes</div>';
+		oflag.innerHTML = '<label class="control-label col-md-3 col-sm-3 col-xs-12" for="optional_sub">Optional Subject <span class="required">*</span></label><div class="col-md-6 col-sm-6 col-xs-12"><input type="radio"  name="optional_sub[]" value="0"> &nbsp; No&nbsp;<input type="radio"  name="optional_sub[]" value="1"> Yes</div>';
 		container.appendChild(oflag);
 
 		var mulflag = document.createElement('div');
 		mulflag.className = "item form-group";
-		mulflag.innerHTML = '<label class="control-label col-md-3 col-sm-3 col-xs-12" for="multiple_techers">Multiple Teachers <span class="required">*</span></label><div class="col-md-6 col-sm-6 col-xs-12"><input type="radio" id="chkNo" name="multiple_techers" onclick="visible();" value="1" /><label for="chkNo">No</label><input type="radio" id="chkYes" name="multiple_techers" onclick="visible();" value="0" /><label for="chkYes">Yes</label></div>';
+		mulflag.innerHTML = '<label class="control-label col-md-3 col-sm-3 col-xs-12" for="multiple_techers">Multiple Teachers <span class="required">*</span></label><div class="col-md-6 col-sm-6 col-xs-12"><input type="radio" id="chkNo" name="multiple_techers[]" onclick="visible();" value="1" /><label for="chkNo">No</label><input type="radio" id="chkYes" name="multiple_techers[]" onclick="visible();" value="0" /><label for="chkYes">Yes</label></div>';
 		container.appendChild(mulflag);
 
 		var teachersdiv = document.createElement('div');
@@ -200,7 +178,7 @@ function reset() {
 		teachersdiv.style.display='none';
 		var teacherIp = document.createElement('div');
 		teacherIp.className = "item form-group";
-		teacherIp.innerHTML = '<label class="control-label col-md-3 col-sm-3 col-xs-12" for="sub_teacher_name">Subject Teacher Name <span class="required">*</span></label><div class="col-md-6 col-sm-6 col-xs-12"><input id="sub_teacher_name" class="form-control col-md-7 col-xs-12"  name="sub_teacher_name[]"  required="required" type="text" oninput="validTeacher(this);" list="teachers" /><datalist id="teachers"><?php
+		teacherIp.innerHTML = '<label class="control-label col-md-3 col-sm-3 col-xs-12" for="sub_teacher_name">Subject Teacher Name <span class="required">*</span></label><div class="col-md-6 col-sm-6 col-xs-12"><input id="sub_teacher_name" class="form-control col-md-7 col-xs-12"  name="sub_teacher_name[]"  required="required" type="text" list="teachers" /><datalist id="teachers"><?php
 	$fetch_query = "SELECT `id`,`name` FROM `teacher` WHERE 1";
 	if ($res = mysqli_query($dbcon,$fetch_query)) {
 		if (mysqli_num_rows($res) > 0) {
@@ -216,14 +194,7 @@ function reset() {
 		container.innerHTML += '<div class="item form-group" id="addTeacherIpBtn" style="display:none;" align="right"><div class="col-md-10 col-sm-10 col-xs-12" ><input type="button" class="btn btn-app" value="Add Teacher" onclick="addTeacherIp();" /></div></div>';
 
 		}
-
-		function validTeacher(teacherElement)
-		{
-			// var teacherName = teacherElement.value;
-			// var teacherAvailable = []
-		}
 </script>
-
 </body>
 </html>
 <?php

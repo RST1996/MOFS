@@ -3,6 +3,7 @@
 	{
 
 		$mail = new MOFSMailer;
+		//$mail->SMTPDebug = 2; 
 		$mail->isSMTP();
 		$mail->Subject = 'MOFS Registration Success';
 		$mail->setFrom('no-reply@gcoej.ac.in', 'ADMIN MOFS');
@@ -356,9 +357,8 @@
 			    </table>
 			  </body>
 			</html>";
-		$mail->AltBody = "Your link is: ";
+		$mail->AltBody = "Hello $name. Your password is $pass";
 		if(!$mail->send()) {
-			//echo 'Message could not be sent.';
 			return false;
 		} 
 		else

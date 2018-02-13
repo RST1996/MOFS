@@ -1,23 +1,10 @@
 <?php
-	print_r($_GET);
+echo $string = "INSERT INTO `acad_response` (`resp_id`, `teacher_id`, `sub_id`, `ques_id`, `response`) VALUES ,('1', '1', '1', '8', '5'),('1', '10', '2', '8', '4'),('1', '1', '1', '9', '3'),('1', '10', '2', '9', '2'),('1', '9', '3', '4', '0')";
+
+echo "<br />";
+$patterns = '/VALUES ,/';
+$replacements = 'VALUES ';
+$string = preg_replace($patterns, $replacements, $string);
+
+echo $string;
 ?>
-<!DOCTYPE html>
-<html>
-<body>
-
-<form action="test.php" method="get">
-  <input list="browsers" name="browser">
-  <datalist id="browsers">
-    <option value="Internet Explorer">abc</option>
-    <option value="Firefox">
-    <option value="Chrome">
-    <option value="Opera">
-    <option value="Safari">
-  </datalist>
-  <input type="submit">
-</form>
-
-<p><strong>Note:</strong> The datalist tag is not supported in Internet Explorer 9 and earlier versions, or in Safari.</p>
-
-</body>
-</html>

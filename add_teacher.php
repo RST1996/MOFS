@@ -5,10 +5,11 @@
 	require_once 'bin/config/dbcon.php';
 	require_once 'bin/lib/csrf.class.php';
 	require_once 'bin/lib/utils.php';
-  require_once 'bin/lib/user_mgmt.php';
-  require_once 'bin/config/class.mail.php';
-  require_once 'bin/config/registration.mail.php';
-  if(!isLoggedin())
+    require_once 'bin/lib/user_mgmt.php';
+    require_once 'bin/config/class.mail.php';
+    require_once 'bin/config/registration.mail.php';
+ 
+    if(!isLoggedin())
 	{
 	   header('Location:login.php');
 	   die('Un-ethical activity detected..!!  Do not try to such things here.'); 
@@ -19,33 +20,24 @@
 	    die('Un-ethical activity detected..!!  Do not try to such things here.'); 
 	}
 
-	$csrf = new csrf();
- 	// Generate Token Id and Valid
-	$token_id = $csrf->get_token_id();
-	$token_value = $csrf->get_token($token_id);	 
-	// Generate Random Form Names
-	$form_names = $csrf->form_names(array('name', 'email'), false);
-	if(isset($_POST[$form_names['name']], $_POST[$form_names['email']], $_POST['add_user']) && !empty($_POST[$form_names['name']]) && !empty($_POST[$form_names['email']])) {
-        // Check if token id and token value are valid.
-        if($csrf->check_valid('post')) {
-                // Get the Form Variables.
-                $name = $_POST[$form_names['name']];
-                $email = $_POST[$form_names['email']];
- 
-                // Form Function Goes Here
-                if(add_user($name,$email))
-                {
-                	echo "<script> alert(User added Successfully!!!); </script>";
-                }
-                else
-                {
-                	echo "<script> alert(Falied to add user); </script>";
-                }
+	
+	if(isset($_POST['name'], $_POST['email'], $_POST['department'], $_POST['add_user']) && !empty($_POST['name']) && !empty($_POST['email'])&& !empty($_POST['department'])) {
+       
+           $name = $_POST['name'];
+           $email = $_POST['email'];
+		   $department = $_POST['department'];
+           $insert_form = "INSERT INTO `teacher`(`id`, `name`, `email`, `department`) VALUES (NULL,'$name','$email','$department')";
+		   if ($res = mysqli_query($dbcon,$insert_form) ){
+				echo "<script> alert('Teacher added Successfully!!!'); </script>";
+			}
+			else
+			{
+				echo "<script> alert('Falied to add Teacher'); </script>";
+			}
+					
         }
-        // Regenerate a new random value for the form.
-        $form_names = $csrf->form_names(array('name', 'email'), true);
-	}
-?>
+       
+	?>
 <!DOCTYPE html>
 <html lang="en">
  <?php include("theme/head.php");?>
@@ -62,7 +54,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Add Users</h3>
+                <h3>Add Teachers</h3>
               </div>
 
               
@@ -81,15 +73,14 @@
                   <div class="x_content">
                     <br />
 					
-					<form method="POST" action="add_user.php" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
-						<input type="hidden" name="<?= $token_id; ?>" value="<?= $token_value; ?>" />
-
+					<form method="POST" action="add_teacher.php" id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+						
                       <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">
 						Name <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-						<input id="name" type="text" name="<?= $form_names['name']; ?>" class="form-control col-md-7 col-xs-12"/>
+						<input id="name" type="text" name="name" class="form-control col-md-7 col-xs-12"/>
                         </div>
                       </div>
 					 
@@ -98,7 +89,30 @@
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="email">Email Id  <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-							<input id="email" type="email" name="<?= $form_names['email']; ?>" class="form-control col-md-7 col-xs-12"/>
+							<input id="email" type="email" name="email" class="form-control col-md-7 col-xs-12"/>
+                        </div>
+                      </div>
+					  
+					  <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="department">
+						Department <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+						<select class="form-control show-tick" id="department" name="department" required>
+													<option value="">---SELECT DEPARTMENT---</option>
+													<?php
+														$dep_sel_query = "SELECT `id`, `name` FROM `department`";
+														if ($res = mysqli_query($dbcon,$dep_sel_query)) {
+															if (mysqli_num_rows($res) > 0) {
+																while ($row = mysqli_fetch_assoc($res)) {
+													?>
+													<option value="<?php echo $row['id']; ?>"><?php echo $row['name'];  ?></option>
+													<?php				
+																}
+															}
+														}			
+													?>
+												</select>
                         </div>
                       </div>
 					  

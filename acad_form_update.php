@@ -4,23 +4,34 @@
 	require_once 'bin/config/dbcon.php';
 	require_once 'bin/lib/utils.php';
     require_once 'bin/lib/user_mgmt.php';
-    if(!isLoggedin())
+	
+	if(!isset($_SESSION['hash']))
 	{
 	   header('Location:login.php');
 	   die('Un-ethical activity detected..!!  Do not try to such things here.'); 
 	}
-	if(!$_SESSION['current_user']['admin_role'])
-	{
-		header('Location:login.php');
-	    die('Un-ethical activity detected..!!  Do not try to such things here.'); 
-	}
-	
+	$hash = $_SESSION['hash'];
+	if (isset($_SESSION['hash']) && !empty($_SESSION['hash']) && isset($_POST['next'])) {
+		$query = "SELECT `resp_id`, `form_id`, `submit_flag` FROM `acad_receipients` WHERE `hash` = '$hash'";
+	 	if(	$res = mysqli_query($dbcon,$query))
+	 	{
+			$row = mysqli_fetch_assoc($res);
+			//$resp_id = $row['resp_id'];
+			$resp_id = 1;
+			//$form_id = $row['form_id'];
+			$form_id = 4;
+			$percentage = $_POST['percentage'];
+			$update_query = "UPDATE `acad_receipients` SET `percentage_group`='$percentage' WHERE `resp_id`= '$resp_id' AND `form_id` = '$form_id' AND `submit_flag` = '0'";
+			if(	$resl = mysqli_query($dbcon,$update_query))
+			{
+			
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
  <?php include("theme/head.php");?>
- 
+	<!-- Switchery -->
+    <link href="vendors/switchery/dist/switchery.min.css" rel="stylesheet">
     <!-- Datatables -->
     <link href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
     <link href="vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
@@ -32,66 +43,62 @@
     <div class="container body">
       <div class="main_container">
         <div class="col-md-3 left_col">
-			<?php include("theme/leftsidebar.php");?>
-			<?php include("theme/navbar.php");?>
+			<?php include("theme/leftsidebar_student_view.php");?>
+			<?php include("theme/navbar_student_view.php");?>
 
 
 		<div class="right_col" role="main">
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>View Users</h3>
-              </div>
-
-              
-			  
+                
+              </div> 
             </div>
             <div class="clearfix"></div>
             <div class="row">
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Registered Users details</h2>
-                    
-					
-                    <div class="clearfix"></div>
-                  </div>
-                  <div class="x_content" id="user_container">
-                    
-					
-                    <table id="datatable" class="table table-striped table-bordered">
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Email</th>
-                          <th>Action</th>
+					  <div class="x_title">
+						
+						<div class="clearfix"></div>
+					  </div>
+					  
+                        <form method="POST" action="acad_form_response.php" id="demo-form2" class="form-horizontal form-label-left" data-parsley-validate>
+						<div class="x_content" id="user_container">
+							<p>Feedback Form.</p>
+						
+							  <h2 class="StepTitle">Select Subjects and Teachers</h2>
+						<table class="table" width="100%">
 						  
-                        </tr>
-                      </thead>
-
-
-                      <tbody>
-                        <tr>
-						<?php
-							$fetch_query = "SELECT `id`, `name`, `email`, `password`, `admin_role` FROM `users` WHERE `admin_role` <> 1 ";
-							if ($res = mysqli_query($dbcon,$fetch_query)) {
-								if (mysqli_num_rows($res) > 0) {
-									while ($row = mysqli_fetch_assoc($res)) {
-						?>
-                          <td><?php echo $row['name'];?></td>
-                          <td><?php echo $row['email'];?></td>
-                          <td><input type="submit" name="delete" value="Delete" class="btn btn-danger" onclick="delete_user(<?php echo $row['id']; ?>)"/></td>
-                          
-						  
-                        </tr>
-                        
-						<?php
+						  <tbody>
+							
+								
+							<?php
+								$select_sub_query = "SELECT `id`, `sub_name`, `sub_type`, `optional_flag`, `multiple_teachers`, `form_id` FROM `subjects` WHERE `form_id` = '$form_id'";
+									if ($result = mysqli_query($dbcon,$select_sub_query)) {
+										if (mysqli_num_rows($result) > 0) {
+											while ($row1 = mysqli_fetch_assoc($result)) {
+													$sub_id = $row1['id'];
+													?>
+								<tr>
+									<td><input type="checkbox"> <?php echo $row1['sub_name'] ?></td>
+									<td><input type="checkbox"></td>
+								</tr>
+													<?php
+											}
+										}
 									}
-								}
-							}
-						?>
-                      </tbody>
-                    </table>
+							?>
+							</tbody>
+							</table>
+							  <div class="ln_solid"></div>
+							  <div class="form-group" align="right">
+								<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+								  <button class="btn btn-primary" name="next2" onclick="acad_sub_selection(<?php echo $resp_id;?>)">NEXT</button>
+								</div>
+							  </div>
+                      </div>
+					  </form>
                   </div>
                 </div>
               </div>
@@ -104,25 +111,16 @@
         
       </div>
     </div>
+    </div>
 			<?php include("theme/script.php");?>
-	<script type="text/javascript">
-	function delete_user($id)
-	{
-		
-		var xhttp = new XMLHttpRequest();
-		
-        xhttp.onreadystatechange = function() {
-			
-        	if (this.readyState == 4 && this.status == 200) {
-				
-        		document.getElementById('user_container').innerHTML = this.responseText; 
-        	}
-        };
-        xhttp.open("POST", "delete_user.php", true);
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send("del_id="+$id);
-	}
-</script>
+	
+
+
+<!-- jQuery Smart Wizard -->
+    <script src="vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script>
+	 <script src="vendors/iCheck/icheck.min.js"></script>
+	 <script src="vendors/switchery/dist/switchery.min.js"></script>
+	
     <!-- Datatables -->
     <script src="vendors/datatables.net/js/jquery.dataTables.min.js"></script>
     <script src="vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
@@ -144,5 +142,8 @@
 </html>
 
 <?php
+			}
+		}
+	} 
     ob_end_flush();
 ?>

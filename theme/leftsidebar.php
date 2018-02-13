@@ -24,15 +24,22 @@
               <div class="menu_section">
                 <h3>General</h3>
                 <ul class="nav side-menu">
-                  <li><a><i class="fa fa-home"></i> Home </a>
+                  <li><a href="index.php"><i class="fa fa-home"></i> Home </a>
                     
                   </li>
-                  <li><a><i class="fa fa-edit"></i> Forms <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-edit"></i> Tasks <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><a href="">Form 1</a></li>
-                      <li><a href="">Form 2</a></li>
-                      <li><a href="">Form 3</a></li>
-                      <li><a href="">Form 4</a></li>
+                      <li><a href="add_user.php">Add Users</a></li>
+                      <li><a href="view_user.php">View Users</a></li>
+                      <li><a href="create_form.php">Create Form</a></li>
+                      <li><a href="edit_form.php">Edit Form</a></li>
+					  <li><a href="subject_category.php">Subject Category</a></li>
+                      <li><a href="add_teacher.php">Add Teacher</a></li>
+                      <li><a href="add_subject.php">Add Subject</a></li>
+                      <li><a href="manage_acad_questions.php">Manage Academic Form</a></li>
+                      
+                      <li><a href="add_recepients.php">Add Recepients</a></li>
+                      
                     </ul>
                   </li>
                 </ul>

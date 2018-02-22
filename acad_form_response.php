@@ -11,6 +11,7 @@
 	   die('Un-ethical activity detected..!!  Do not try to such things here.'); 
 	}
 	$hash = $_SESSION['hash'];
+	
 	if(isset($_POST['submit']))
 	{
 		$resp_id = 1;
@@ -117,8 +118,8 @@
 									<td>5 - Mostly</td> 
 									<td>4 -Quite often</td>
 									<td>3-At times</td>
-									<td>1-Hardly</td>
-									<td>0- Never</td>
+									<td>2-Hardly</td>
+									<td>1- Never</td>
 								</tr>
 								<?php 
 									$select_sub_query = "SELECT `teacher`.`id` as `tech_id`,`teacher`.`name`,`subjects`.`id` as `sub_id`,`subjects`.`sub_name`,`sub_category`.`id`,`acad_sub_selection`.`resp_id` FROM `subjects`,`teacher`,`acad_sub_selection`,`acad_receipients`,`sub_category` WHERE `acad_receipients`.`hash` = '$hash'  AND `acad_receipients`.`resp_id` =  `acad_sub_selection`.`resp_id` AND `teacher`.`id` = `acad_sub_selection`.`teacher_id` AND `subjects`.`id` = `acad_sub_selection`.`sub_id` AND `sub_category`.`id` = `subjects`.`sub_type` AND `subjects`.`sub_type` ='1'";
@@ -144,7 +145,7 @@
 									<td><input type="radio"  name="responce_list_th[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="2">
 									
 									</td>
-									<td><input type="radio"  name="responce_list_th[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="0">
+									<td><input type="radio"  name="responce_list_th[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="1">
 									
 									</td>
 											
@@ -184,8 +185,8 @@
 									<td>5 - Mostly</td> 
 									<td>4 -Quite often</td>
 									<td>3-At times</td>
-									<td>1-Hardly</td>
-									<td>0- Never</td>
+									<td>2-Hardly</td>
+									<td>1- Never</td>
 								</tr>
 								<?php 
 									$select_sub_query = "SELECT `teacher`.`id` as `tech_id`,`teacher`.`name`,`subjects`.`id` as `sub_id`,`subjects`.`sub_name`,`sub_category`.`id`,`acad_sub_selection`.`resp_id` FROM `subjects`,`teacher`,`acad_sub_selection`,`acad_receipients`,`sub_category` WHERE `acad_receipients`.`hash` = '$hash'  AND `acad_receipients`.`resp_id` =  `acad_sub_selection`.`resp_id` AND `teacher`.`id` = `acad_sub_selection`.`teacher_id` AND `subjects`.`id` = `acad_sub_selection`.`sub_id` AND `sub_category`.`id` = `subjects`.`sub_type` AND `subjects`.`sub_type` ='2'";
@@ -213,7 +214,7 @@
 									<td><input type="radio"  name="responce_list_pr[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="2">
 									
 									</td>
-									<td><input type="radio"  name="responce_list_pr[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="0">
+									<td><input type="radio"  name="responce_list_pr[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="1">
 									
 									</td>
 											

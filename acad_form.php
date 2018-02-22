@@ -16,24 +16,15 @@
 	if (isset($_GET['token']) && !empty($_GET['token'])) {
 	 	$hash = $_GET['token'];
 		$_SESSION['hash'] = $hash;
-	 	$query = "SELECT `acad_form`.`name`,`acad_form`.`description`,`resp_id`, `form_id`, `submit_flag` FROM `acad_form`,`acad_receipients` WHERE `hash` = '$hash' AND `form_id` = `acad_form`.`id` AND `submit_flag` = '0'";
+	 	$query = "SELECT `acad_form`.`name`,`acad_form`.`description`,`resp_id`, `acad_receipients`.`form_id`, `submit_flag` FROM `acad_form`,`acad_receipients` WHERE `hash` = '$hash' AND `form_id` = `acad_form`.`id`";
 	 	if(	$res = mysqli_query($dbcon,$query))
 	 	{
 	 		$row = mysqli_fetch_assoc($res);
-	 		$form_name = $row['name'];
+			$form_name = $row['name'];
 			$desc = $row['description'];
-	 	}
-	 	else
-	 	{
-?>
-	<script type="text/javascript">
-		alert("Failed to identify the form...");
-		window.location.href="index.php";
-	</script>
-<?php
-	 	}
-	} 
-?>
+			$form_id = $row['form_id'];
+			$_SESSION['resp_id'] = $row['resp_id'];
+	 	?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -73,7 +64,7 @@
 					  
                         <form method="POST" action="acad_form_update.php" id="demo-form2" class="form-horizontal form-label-left" data-parsley-validate>
 						<div class="x_content" id="user_container">
-							<p>Feedback Form.</p>
+							<h3>Feedback Form.</h3>
 						
 							  <div class="form-group">
 								<label class="control-label col-md-3 col-sm-3 col-xs-12">Your Percentage in the last year/sem.</label>
@@ -88,13 +79,55 @@
 								  </select>
 								</div>
 							  </div>
-							  <div class="ln_solid"></div>
+							  
+                      </div>
+					  <div class="x_content" id="user_container">
+						<h2 class="StepTitle">Select Subjects </h2>
+						<table class="table" width="100%">
+						  
+						  <tbody>
+							
+								
+							<?php
+								$select_sub_query = "SELECT `id`, `sub_name`, `sub_type`, `optional_flag`, `multiple_teachers` FROM `subjects` WHERE `form_id` = '$form_id' ORDER BY `sub_type`";
+									if ($result = mysqli_query($dbcon,$select_sub_query)) {
+										if (mysqli_num_rows($result) > 0) {
+											while ($row1 = mysqli_fetch_assoc($result)) {
+													$sub_id = $row1['id'];
+													if($row1['optional_flag'])
+													{
+											?>
+									<tr>
+										<td><input type="checkbox" value="<?php echo $sub_id ?>" name="subjects[]"> <?php echo $row1['sub_name'] ?></td>
+										
+									</tr>
+<?php											
+													}
+												else{
+
+													?>
+									<tr>
+										<td><input type="checkbox" value="<?php echo $sub_id ?>" checked hidden name="subjects[]"> <?php echo $row1['sub_name'] ?></td>
+										
+									</tr>
+											
+												<?php
+												}
+											}
+										}
+									}
+							?>
+							</tbody>
+							</table>
+							 <div class="ln_solid"></div>
 							  <div class="form-group" align="right">
 								<div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
 								  <input type="submit" class="btn btn-primary" value="NEXT" name="next" type="button"/>
 								</div>
 							  </div>
                       </div>
+					  
+					  
                   </div>
                 </div>
               </div>
@@ -135,7 +168,18 @@
 			
   </body>
 </html>
-
 <?php
+}
+	 	else
+	 	{
+?>
+	<script type="text/javascript">
+		alert("Failed to identify the form...");
+		window.location.href="index.php";
+	</script>
+<?php
+	 	}
+	} 
+?>
     ob_end_flush();
 ?>

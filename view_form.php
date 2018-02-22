@@ -63,7 +63,7 @@
 								
 								  <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
 									<div class="tile-stats">
-									  <div class="icon"><a href="acad_form.php?form_id=<?php echo $row['id'];?>"><i class="fa fa-file"></i>
+									  <div class="icon"><a href="response.php?form_id=<?php echo $row['id'];?>"><i class="fa fa-file"></i>
 									  </div>
 									  <div class="count"><?php echo $count;?></div>
 										<br />

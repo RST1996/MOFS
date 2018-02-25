@@ -20,10 +20,12 @@
 	 	if(	$res = mysqli_query($dbcon,$query))
 	 	{
 	 		$row = mysqli_fetch_assoc($res);
-			$form_name = $row['name'];
-			$desc = $row['description'];
-			$form_id = $row['form_id'];
-			$_SESSION['resp_id'] = $row['resp_id'];
+			if($row['submit_flag'] == 0)
+			{
+				$form_name = $row['name'];
+				$desc = $row['description'];
+				$form_id = $row['form_id'];
+				$_SESSION['resp_id'] = $row['resp_id'];
 	 	?>
 
 <!DOCTYPE html>
@@ -169,7 +171,17 @@
   </body>
 </html>
 <?php
-}
+	}
+	else
+	{
+		?>
+	<script type="text/javascript">
+		alert("Form Already Filled......");
+		window.location.href="index.php";
+	</script>
+<?php
+	}
+	}
 	 	else
 	 	{
 ?>
@@ -180,6 +192,6 @@
 <?php
 	 	}
 	} 
-?>
+
     ob_end_flush();
 ?>

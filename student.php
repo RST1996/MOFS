@@ -65,27 +65,7 @@
             <form method="POST" action="login.php">
               <h1>Login Form</h1>
               <p>Please Login to Continue...</p>
-              <div class="input-group">
-                  <span class="input-group-addon">
-                      <i class="fa fa-users"></i>
-                  </span><div>
-                  <input type="text" class="form-control" id="username" name="username" placeholder="Username" required autofocus/></div>
-              </div>    
-              <div class="input-group">
-                  <span class="input-group-addon">
-                      <i class="fa fa-lock"></i>
-                  </span> 
-                  <div>                 
-                  <input type="password" class="form-control" id="password" name="password" placeholder="Password" required /></div>
-              </div>
-              <div>
-                <input type="submit" name="log_in" class="btn btn-primary" value="Log in"/>
-                <a class="reset_pass" href="#">Lost your password?</a>
-              </div>        
-              <div class="clearfix"></div>
-              <div class="separator">
-                <div class="clearfix"></div>
-                <br />
+              
 
                 <div>
                   <h1><i class="fa fa-graduation-cap "></i> GCOEJ - MOFS</h1>

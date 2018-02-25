@@ -168,7 +168,7 @@
 						</div>
 						<div class="col-md-2" align="center">
 							<div class="form-group">
-							<form method="get" action="../format.csv">
+							<form method="get" action="format.csv">
 								<button type="submit" class="btn btn-primary waves-effect">Download!</button>
 							</form>
 							</div>

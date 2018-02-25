@@ -4,7 +4,7 @@
 	require_once 'bin/config/dbcon.php';
 	require_once 'bin/lib/utils.php';
     require_once 'bin/lib/user_mgmt.php';
-	
+
 	if(!isset($_SESSION['hash']))
 	{
 	   header('Location:login.php');
@@ -43,7 +43,7 @@
 			$resp_id = $row['resp_id'];
 			
 			$form_id = $row['form_id'];
-			
+			$_SESSION['form_id'] = $form_id;
 			$percentage = $_POST['percentage'];
 			$update_query = "UPDATE `acad_receipients` SET `percentage_group`='$percentage' WHERE `resp_id`= '$resp_id' AND `form_id` = '$form_id' AND `submit_flag` = '0'";
 			

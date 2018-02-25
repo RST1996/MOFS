@@ -4,7 +4,6 @@
 	require_once 'bin/config/dbcon.php';
 	require_once 'bin/lib/utils.php';
     require_once 'bin/lib/user_mgmt.php';
-    require_once 'bin/lib/form_mgmt.php';
 	
 	if(!isset($_SESSION['hash']))
 	{
@@ -13,12 +12,12 @@
 	}
 	$hash = $_SESSION['hash'];
 	$form_id = $_SESSION['form_id'] ;
-	$resp_id = $_SESSION['resp_id'];
+	$resp_id = $_SESSION['resp_id']; 
+	
 	if(isset($_POST['submit']))
 	{
 		
-		
-		$query = "INSERT INTO `acad_response` (`resp_id`, `teacher_id`, `sub_id`, `ques_id`, `response`,`form_id`) VALUES ";
+		$query = "INSERT INTO `acad_summary_results` (`resp_id`, `teacher_id`, `sub_id`, `ques_id`, `reponse`,`form_id`) VALUES ";
 		foreach($_POST['responce_list_th'] as $ques_id => $array)
 		{
 			foreach($array as $tech_id => $array2)
@@ -27,14 +26,14 @@
 				{
 					foreach($array3 as $resopnse)
 						{
-							$query .= ",('$resp_id', '$tech_id', '$sub_id', '$ques_id', '$resopnse[0]','$form_id')";
 							
+							$query .= ",('$resp_id', '$tech_id', '$sub_id', '$ques_id', '$resopnse[0]','$form_id')";
+						
 						}
 						
 				}
 			}
 		}
-		
 		foreach($_POST['responce_list_pr'] as $ques_id => $array)
 		{
 			foreach($array as $tech_id => $array2)
@@ -44,24 +43,24 @@
 					foreach($array3 as $resopnse)
 						{
 							$query .= ",('$resp_id', '$tech_id', '$sub_id', '$ques_id', '$resopnse[0]','$form_id')";
-							
+						
 						}
 				}
 			}
 		}
 		$query = preg_replace('/VALUES ,/', 'VALUES ', $query);
 		if ($res = mysqli_query($dbcon,$query) ){
-						$results = calculate_sum($resp_id,$form_id);
-						if($results == "sucess" )
-							header( "refresh:1; url=acad_form_final.php" );
-						else
-							echo "<script> alert('Failed.. CONTACT ADMIN'); </script>";
-							
-					
+			
+					$update_query = "UPDATE `acad_receipients` SET `submit_flag`='1' WHERE `resp_id` = '$resp_id' AND `form_id` = '$form_id' AND `hash` = '$hash'";
+					if ($res = mysqli_query($dbcon,$update_query) ){
+					echo "<script> alert('Form Submitted Successfully!!!'); </script>";
+					unset($_POST);
+					header( "refresh:1; url=index.php" );
+					}
 				}
 				else
-				{
-					echo "Error description: " . mysqli_error($dbcon);
+				{echo "Error description: " . mysqli_error($dbcon);
+					//echo "<script> alert('Failed.. CONTACT ADMIN'); </script>";
 				}
 }
 			
@@ -73,12 +72,6 @@
  <?php include("theme/head.php");?>
 	<!-- Switchery -->
     <link href="vendors/switchery/dist/switchery.min.css" rel="stylesheet">
-    <!-- Datatables -->
-    <link href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-    <link href="vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-    <link href="vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
-    <link href="vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-    <link href="vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 
   <body class="nav-md">
     <div class="container body">
@@ -103,13 +96,32 @@
 						
 						<div class="clearfix"></div>
 					  </div>
-					  
-                        <form method="POST" action="acad_form_response.php" id="demo-form2" class="form-horizontal form-label-left" data-parsley-validate>
+					  <h2>Your Feedback is as follows </h2>
+					  <table class="table table-hover" width="50%">
+								
+					  <?php
+							$select_query = "SELECT `teacher`.`name`,`subjects`.`sub_name`,`acad_summary_results`.`reponse` FROM `acad_summary_results`,`teacher`,`subjects` WHERE `acad_summary_results`.`resp_id` = '$resp_id' AND `teacher`.`id` = `acad_summary_results`.`teacher_id`  AND `subjects`.`id` =`acad_summary_results`.`sub_id` AND `acad_summary_results`.`form_id` = '$form_id'";
+							if ($ress = mysqli_query($dbcon,$select_query)) {
+							if (mysqli_num_rows($ress) > 0) {
+								
+								while ($rows = mysqli_fetch_assoc($ress)) {
+									
+					  ?>
+								<tr>
+									<td><?php echo $rows['name'];?><br /><p><font size="1" color="blue">(<?php echo $rows['sub_name'];?>)</font></p></td>
+									<td><?php echo $rows['reponse']."%"?></td>
+								</tr>
+								<?php
+								}
+								}
+								}?>
+							</table>
+                        <form method="POST" action="acad_form_final.php" id="demo-form2" class="form-horizontal form-label-left" data-parsley-validate>
 						<div class="x_content" id="user_container">
 							<h2>Theory Subjects</h2>
 							<?php
 						     
-							$fetch_query = "SELECT `id`, `question` FROM `acad_form_questions` WHERE `sub_cat_id` = '1' AND `id` <> '45'";
+							$fetch_query = "SELECT * FROM `acad_summary_ques` WHERE `sub_cat_id` = '1'  AND `id` = '3'";
 							if ($res = mysqli_query($dbcon,$fetch_query)) {
 								if (mysqli_num_rows($res) > 0) {
 									while ($row = mysqli_fetch_assoc($res)) {
@@ -121,11 +133,12 @@
 								<tbody>
 								<tr>
 									<td></td>
-									<td>5 - Mostly</td> 
-									<td>4 -Quite often</td>
-									<td>3-At times</td>
-									<td>2-Hardly</td>
-									<td>1- Never</td>
+									<td>O - outstanding</td> 
+									<td>E - Excellent</td>
+									<td>V - Very Good</td>
+									<td>G -  Good</td>
+									<td>S - Satisfactory</td>
+									<td>N - Not satisfactory</td>
 								</tr>
 								<?php 
 									$select_sub_query = "SELECT `teacher`.`id` as `tech_id`,`teacher`.`name`,`subjects`.`id` as `sub_id`,`subjects`.`sub_name`,`sub_category`.`id`,`acad_sub_selection`.`resp_id` FROM `subjects`,`teacher`,`acad_sub_selection`,`acad_receipients`,`sub_category` WHERE `acad_receipients`.`hash` = '$hash'  AND `acad_receipients`.`resp_id` =  `acad_sub_selection`.`resp_id` AND `teacher`.`id` = `acad_sub_selection`.`teacher_id` AND `subjects`.`id` = `acad_sub_selection`.`sub_id` AND `sub_category`.`id` = `subjects`.`sub_type` AND `subjects`.`sub_type` ='1'";
@@ -139,19 +152,24 @@
 								<tr>
 								
 									<td><?php echo $row1['name'];?><br /><p><font size="1" color="blue">(<?php echo $row1['sub_name'];?>)</font></p></td> 
-									<td><input type="radio" required name="responce_list_th[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="5">
+									
+									
+									<td><input type="radio" required name="responce_list_th[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="10">
 									
 									</td>
-									<td><input type="radio"  name="responce_list_th[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="4">
+									<td><input type="radio"  name="responce_list_th[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="9">
 									
 									</td>
-									<td><input type="radio"  name="responce_list_th[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="3">
+									<td><input type="radio"  name="responce_list_th[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="8">
 									
 									</td>
-									<td><input type="radio"  name="responce_list_th[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="2">
+									<td><input type="radio"  name="responce_list_th[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="7">
 									
 									</td>
-									<td><input type="radio"  name="responce_list_th[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="1">
+									<td><input type="radio"  name="responce_list_th[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="6">
+									
+									</td>
+									<td><input type="radio"  name="responce_list_th[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="5">
 									
 									</td>
 											
@@ -177,7 +195,7 @@
 							<h2>Practical Subjects</h2>
 							<?php
 						     
-							$fetch_query = "SELECT `id`, `question` FROM `acad_form_questions` WHERE `sub_cat_id` = '2' AND `id` <> '46'";
+							$fetch_query = "SELECT * FROM `acad_summary_ques` WHERE `sub_cat_id` = '2'  AND `id` = '4'";
 							if ($res = mysqli_query($dbcon,$fetch_query)) {
 								if (mysqli_num_rows($res) > 0) {
 									while ($row = mysqli_fetch_assoc($res)) {
@@ -188,11 +206,12 @@
 								<tbody>
 								<tr>
 									<td></td>
-									<td>5 - Mostly</td> 
-									<td>4 -Quite often</td>
-									<td>3-At times</td>
-									<td>2-Hardly</td>
-									<td>1- Never</td>
+									<td>O - outstanding</td> 
+									<td>E - Excellent</td>
+									<td>V - Very Good</td>
+									<td>G -  Good</td>
+									<td>S - Satisfactory</td>
+									<td>N - Not satisfactory</td>
 								</tr>
 								<?php 
 									$select_sub_query = "SELECT `teacher`.`id` as `tech_id`,`teacher`.`name`,`subjects`.`id` as `sub_id`,`subjects`.`sub_name`,`sub_category`.`id`,`acad_sub_selection`.`resp_id` FROM `subjects`,`teacher`,`acad_sub_selection`,`acad_receipients`,`sub_category` WHERE `acad_receipients`.`hash` = '$hash'  AND `acad_receipients`.`resp_id` =  `acad_sub_selection`.`resp_id` AND `teacher`.`id` = `acad_sub_selection`.`teacher_id` AND `subjects`.`id` = `acad_sub_selection`.`sub_id` AND `sub_category`.`id` = `subjects`.`sub_type` AND `subjects`.`sub_type` ='2'";
@@ -208,19 +227,22 @@
 								
 									<td><?php echo $row1['name'];?><br /><p><font size="1" color="blue">(<?php echo $row1['sub_name'];?>)</font></p></td> 
 									
-									<td><input type="radio" required name="responce_list_pr[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="5">
+									<td><input type="radio" required name="responce_list_pr[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="10">
 									
 									</td>
-									<td><input type="radio"  name="responce_list_pr[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="4">
+									<td><input type="radio"  name="responce_list_pr[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="9">
 									
 									</td>
-									<td><input type="radio"  name="responce_list_pr[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="3">
+									<td><input type="radio"  name="responce_list_pr[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="8">
 									
 									</td>
-									<td><input type="radio"  name="responce_list_pr[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="2">
+									<td><input type="radio"  name="responce_list_pr[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="7">
 									
 									</td>
-									<td><input type="radio"  name="responce_list_pr[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="1">
+									<td><input type="radio"  name="responce_list_pr[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="6">
+									
+									</td>
+									<td><input type="radio"  name="responce_list_pr[<?php echo $ques_id?>][<?php echo $tech_id ?>][<?php echo $sub_id ?>][]" value="5">
 									
 									</td>
 											
@@ -271,22 +293,6 @@
 	 <script src="vendors/iCheck/icheck.min.js"></script>
 	 <script src="vendors/switchery/dist/switchery.min.js"></script>
 	
-    <!-- Datatables -->
-    <script src="vendors/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-    <script src="vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-    <script src="vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
-    <script src="vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
-    <script src="vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
-    <script src="vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-    <script src="vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-    <script src="vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-    <script src="vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
-    <script src="vendors/jszip/dist/jszip.min.js"></script>
-    <script src="vendors/pdfmake/build/pdfmake.min.js"></script>
-    <script src="vendors/pdfmake/build/vfs_fonts.js"></script>
 			
   </body>
 </html>

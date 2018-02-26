@@ -100,7 +100,7 @@
 					  <table class="table table-hover" width="50%">
 								
 					  <?php
-							$select_query = "SELECT `teacher`.`name`,`subjects`.`sub_name`,`acad_summary_results`.`reponse` FROM `acad_summary_results`,`teacher`,`subjects` WHERE `acad_summary_results`.`resp_id` = '$resp_id' AND `teacher`.`id` = `acad_summary_results`.`teacher_id`  AND `subjects`.`id` =`acad_summary_results`.`sub_id` AND `acad_summary_results`.`form_id` = '$form_id'";
+							$select_query = "SELECT `teacher`.`name`,`subjects`.`sub_name`,`acad_summary_results`.`reponse`,`subjects`.`sub_type` FROM `acad_summary_results`,`teacher`,`subjects` WHERE `acad_summary_results`.`resp_id` = '$resp_id' AND `teacher`.`id` = `acad_summary_results`.`teacher_id`  AND `subjects`.`id` =`acad_summary_results`.`sub_id` AND `acad_summary_results`.`form_id` = '$form_id'  ORDER By `subjects`.`sub_type` ";
 							if ($ress = mysqli_query($dbcon,$select_query)) {
 							if (mysqli_num_rows($ress) > 0) {
 								
@@ -121,7 +121,7 @@
 							<h2>Theory Subjects</h2>
 							<?php
 						     
-							$fetch_query = "SELECT * FROM `acad_summary_ques` WHERE `sub_cat_id` = '1'  AND `id` = '3'";
+							$fetch_query = "SELECT * FROM `acad_summary_ques` WHERE `id` = '2'";
 							if ($res = mysqli_query($dbcon,$fetch_query)) {
 								if (mysqli_num_rows($res) > 0) {
 									while ($row = mysqli_fetch_assoc($res)) {
@@ -195,7 +195,7 @@
 							<h2>Practical Subjects</h2>
 							<?php
 						     
-							$fetch_query = "SELECT * FROM `acad_summary_ques` WHERE `sub_cat_id` = '2'  AND `id` = '4'";
+							$fetch_query = "SELECT * FROM `acad_summary_ques` WHERE `id` = '2'";
 							if ($res = mysqli_query($dbcon,$fetch_query)) {
 								if (mysqli_num_rows($res) > 0) {
 									while ($row = mysqli_fetch_assoc($res)) {

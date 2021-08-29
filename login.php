@@ -90,6 +90,7 @@
                 <div>
                   <h1><i class="fa fa-graduation-cap "></i> GCOEJ - MOFS</h1>
                   <p>©2017 All Rights Reserved.<br/> GCOEJ - Multipurpose Online Feedback System<br/> Made with <i class="fa fa-heart "></i> by SDC</p>
+				  <!--<h4><a href="developers.php"><i class="fa fa-edit "></i> Developers</a></h4> -->
                 </div>
               </div>
             </form>
